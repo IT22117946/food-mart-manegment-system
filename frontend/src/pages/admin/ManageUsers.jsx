@@ -167,7 +167,7 @@ export default function ManageUsers() {
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         
         <Button variant="contained" color="primary" style={{ marginBottom: '20px' }} onClick={handleGeneratePDF}>Generate PDF</Button>
-        <Button variant="contained" color="primary" style={{ marginBottom: '20px' }} onClick={handleSignupDialogOpen}>Add New User</Button>
+        
         <TextField id="search" label="Search by Email" variant="outlined" size="small" onChange={(e) => getUsers(e.target.value)} />
       </div>
 
