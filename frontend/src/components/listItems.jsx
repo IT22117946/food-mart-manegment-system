@@ -80,6 +80,16 @@ export const customerListItems = (
       <ListItemText primary="Review" />
     </ListItemButton>
   </Link>
+
+  <Link to={'/customer/hotdeals'}>
+    <ListItemButton>
+      <ListItemIcon>
+        <Whatshot />
+      </ListItemIcon>
+      <ListItemText primary="Hot Deals" />
+    </ListItemButton>
+  </Link>
+
   <Link to={'/customer/newsfeed'}>
     <ListItemButton>
       <ListItemIcon>

@@ -90,6 +90,7 @@ export default function App() {
             <Route path='review' element={<GuestReview />} />
             <Route path='newsfeed' element={<Newsfeed />} />
             <Route path='news/:id' element={<News />} />
+            <Route path='hotdeals' element={<GuestHotdeals />} />
             <Route path='itempage/:id' element={<ItemPage />} />
             <Route path='checkout' element={<Checkout />} />
             <Route path='address' element={<ManageAddress />} />
