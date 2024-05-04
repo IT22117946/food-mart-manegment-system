@@ -17,24 +17,35 @@ import { Checkbox, FormControlLabel, Grid, Paper } from "@mui/material";
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [buttonDisable, setBtnDisabled] = useState(false)
+  const [buttonDisable, setBtnDisabled] = useState(false);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex for validating email format
 
   const handleSubmit = async (event) => {
-
     event.preventDefault();
     setBtnDisabled(true);
     const data = new FormData(event.currentTarget);
+    const email = data.get('email');
+    const password = data.get('password');
+
+    // Check if email format is valid
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address.');
+      setBtnDisabled(false);
+      return;
+    }
+
     const payload = {
-      email: data.get('email'),
-      password: data.get('password'),
+      email: email,
+      password: password,
     };
+
     try {
       const isLoggedin = await axios.post(`${apiUrl}/user/login`, payload);
       if (isLoggedin) {
         Cookies.set('firstName', isLoggedin.data.firstName);
+        login(isLoggedin.data.userRole, isLoggedin.data.token);
 
-        login(isLoggedin.data.userRole, isLoggedin.data.token)
-
+        // Handle login based on user role
         switch (isLoggedin.data.userRole) {
           case 'admin': //store
             toast.success('Login Success as an admin')
@@ -83,19 +94,12 @@ export default function Login() {
     } finally {
       setBtnDisabled(false);
     }
-
-
-
   };
 
   return (
     <Container component="main" maxWidth="lg">
-      <Box
-        sx={{
-          marginTop: 8,
-        }}
-      >
-        <Grid container >
+      <Box sx={{ marginTop: 8 }}>
+        <Grid container>
           <Grid
             item
             xs={12}
@@ -153,6 +157,7 @@ export default function Login() {
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
+                  disabled={buttonDisable}
                 >
                   Sign In
                 </Button>
