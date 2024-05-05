@@ -10,7 +10,9 @@ import authAxios from '../../utils/authAxios';
 import jsPDF from 'jspdf';
 import { DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { Delete } from '@mui/icons-material';
-
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
 
 export default function Salary() {
   const [salaries, setSalaries] = useState([]);
@@ -162,11 +164,11 @@ export default function Salary() {
 
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center" style={{ backgroundImage: "url('https://static.vecteezy.com/system/resources/previews/015/568/009/original/businessman-and-lot-of-money-office-employee-salary-and-bonus-rich-and-successful-man-sits-at-table-green-pile-of-banknotes-cartoon-flat-illustration-vector.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
       <h2 className="text-xl font-bold mb-4">Salary Details</h2>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button variant="contained" style={{ marginBottom: '20px', marginRight: '50px' }} onClick={handleDialogOpen}>Create Salary</Button>
-        <Button variant="contained" color="primary" style={{ marginBottom: '20px' }} onClick={handleGeneratePDF}>Generate PDF</Button>
+        <Button variant="contained" style={{ marginBottom: '20px', marginRight: '50px', backgroundColor: '#009E60', color: '#fff' }} onClick={handleDialogOpen}>Create Salary</Button>
+        <Button variant="contained" color="primary" style={{ marginBottom: '20px', backgroundColor: '#009E60', color: '#fff' }} onClick={handleGeneratePDF}>Generate PDF</Button>
       </div>
 
       <Dialog open={openDialog} onClose={handleDialogClose}>
@@ -220,35 +222,38 @@ export default function Salary() {
           </DialogActions>
         </DialogContent>
       </Dialog>
-      <table className="w-full border-collapse border border-gray-400 mt-4">
-        <thead>
-          <tr className="bg-blue-100">
-            <th className="border border-gray-400 py-2 px-4">User Name</th>
-            <th className="border border-gray-400 py-2 px-4">Basic</th>
-            <th className="border border-gray-400 py-2 px-4">Attendance Allowance</th>
-            <th className="border border-gray-400 py-2 px-4">Fuel Allowance</th>
-            <th className="border border-gray-400 py-2 px-4">Overtime</th>
-            <th className="border border-gray-400 py-2 px-4">Total Salary</th>
-            <th className="border border-gray-400 py-2 px-4"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {salaries.map((salary) => (
-            <tr key={salary._id} className="bg-white">
-              <td className="border border-gray-400 py-2 px-4">{salary.userId.firstName} {salary.userId.lastName}</td>
-              <td className="border border-gray-400 py-2 px-4">{salary.basic.toFixed(2)}</td>
-              <td className="border border-gray-400 py-2 px-4">{salary.attendanceAllowance.toFixed(2)}</td>
-              <td className="border border-gray-400 py-2 px-4">{salary.fuelAllowance.toFixed(2)}</td>
-              <td className="border border-gray-400 py-2 px-4">{salary.overtime.toFixed(2)}</td>
-              <td className="border border-gray-400 py-2 px-4">{salary.totalSalary.toFixed(2)}</td>
-              <td>
-                <Button variant="outlined" color="primary" className="mr-2" onClick={() => handleUpdateUser(salary)}>Update</Button>
-                <Button variant="outlined" color="error" onClick={() => handleDelete(salary._id)}>Delete</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+      <div className="flex flex-wrap justify-center">
+        {salaries.map((salary) => (
+          <Card key={salary._id} className="m-2" style={{ backgroundColor: '#C1E1C1', maxWidth: '300px' }}>
+            <CardContent>
+              <div>
+                <strong>User Name:</strong> {salary.userId.firstName} {salary.userId.lastName}
+              </div>
+              <div>
+                <strong>Basic:</strong> {salary.basic.toFixed(2)}
+              </div>
+              <div>
+                <strong>Attendance Allowance:</strong> {salary.attendanceAllowance.toFixed(2)}
+              </div>
+              <div>
+                <strong>Fuel Allowance:</strong> {salary.fuelAllowance.toFixed(2)}
+              </div>
+              <div>
+                <strong>Overtime:</strong> {salary.overtime.toFixed(2)}
+              </div>
+              <div>
+                <strong>Total Salary:</strong> {salary.totalSalary.toFixed(2)}
+              </div>
+            </CardContent>
+            <CardActions>
+              <Button variant="contained" color="primary" style={{ backgroundColor: '#009E60', color: '#fff' }} className="mr-2" onClick={() => handleUpdateUser(salary)}>Update</Button>
+              <Button variant="contained" color="error" onClick={() => handleDelete(salary._id)}>Delete</Button>
+            </CardActions>
+          </Card>
+        ))}
+      </div>
+
       <Dialog open={openUpdateDialog} onClose={handleDialogClose}>
         <DialogTitle>Update User</DialogTitle>
         <DialogContent>
