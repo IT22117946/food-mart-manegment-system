@@ -174,7 +174,7 @@ const Home = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-end',
-          marginBottom: 2,
+          marginBottom: 4,
           backgroundColor: '#FED8B1', // Shade of orange
         }}
       >
@@ -203,8 +203,8 @@ const Home = () => {
   variant="outlined" 
   sx={{ 
     color: '#FFFFFF', // Text color (white)
-    backgroundColor: '#1976D2', // Background color (blue)
-    '&:hover': { backgroundColor: '#1565C0' } // Hover background color (dark blue)
+    backgroundColor: '#0689FF', // Background color (blue)
+    '&:hover': { backgroundColor: '#0689FF' } // Hover background color (dark blue)
   }} 
   onClick={generatePDF}
 >
