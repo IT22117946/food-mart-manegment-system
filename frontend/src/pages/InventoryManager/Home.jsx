@@ -167,7 +167,7 @@ const Home = () => {
   
 
   return (
-    <Container maxWidth={'800px'}>
+    <Container maxWidth={'800px'} style={{backgroundImage: 'url("https://www.shutterstock.com/image-photo/blur-warehouse-inventory-product-stock-600nw-1044779980.jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', minHeight: '100vh'}}>
       <WelcomeCardInventory />
       <Box
         sx={{
@@ -175,36 +175,56 @@ const Home = () => {
           alignItems: 'center',
           justifyContent: 'flex-end',
           marginBottom: 2,
+          backgroundColor: '#FED8B1', // Shade of orange
         }}
       >
         <InputBase
           placeholder="  Search…"
-          sx={{ ml: 1, width: 200, border: '1px solid #ccc', borderRadius: 3 }}
+          sx={{ ml: 1, width: 200,backgroundColor: '#FFB645', border: '1px solid #ccc', borderRadius: 3 }}
           onChange={handleSearchChange}
         />
         <IconButton sx={{ p: '10px', marginRight: 2 }} aria-label="search">
           <SearchIcon />
         </IconButton>
-        <Button variant="outlined" color="success" component={Link} to="/inventory/add-item">
-          Add Item
-        </Button>
-        <Button variant="outlined" color="primary" onClick={generatePDF}>
-          Generate PDF
-        </Button>
+        <Button 
+  variant="outlined" 
+  sx={{ 
+    marginRight: 2, 
+    color: '#FFFFFF', // Text color (white)
+    backgroundColor: '#4CAF50', // Background color (green)
+    '&:hover': { backgroundColor: '#388E3C' } // Hover background color (dark green)
+  }} 
+  component={Link} 
+  to="/inventory/add-item"
+>
+  Add Item
+</Button>
+<Button 
+  variant="outlined" 
+  sx={{ 
+    color: '#FFFFFF', // Text color (white)
+    backgroundColor: '#1976D2', // Background color (blue)
+    '&:hover': { backgroundColor: '#1565C0' } // Hover background color (dark blue)
+  }} 
+  onClick={generatePDF}
+>
+  Generate PDF
+</Button>
+
       </Box>
-      <Paper sx={{ width: '100%', marginTop: 2 }}>
+      <Paper sx={{ width: '100%', marginTop: 2, backgroundColor: 'transparent' }}> {/* Another shade of orange */}
         {
           !isLoading ? <>
             <TableContainer sx={{ maxHeight: '100%' }}>
               <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">Name</TableCell>
-                    <TableCell align="center">Category</TableCell>
-                    <TableCell align="center">Quantity</TableCell>
-                    <TableCell align="center">Price</TableCell>
-                    <TableCell align="center">Image</TableCell>
-                    <TableCell align="center">Action</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '16px' }}>Name</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '16px' }}>Category</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '16px' }}>Quantity</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '16px' }}>Price</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '16px' }}>Image</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '16px' }}>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -213,24 +233,40 @@ const Home = () => {
                       key={row.itemName}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
-                      <TableCell align="center" component="th" scope="row">
-                        {row.itemName}
-                      </TableCell>
-                      <TableCell align="center">{row.category}</TableCell>
-                      <TableCell align="center">{row.quantity}</TableCell>
-                      <TableCell align="center">{row.price}</TableCell>
+                      <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '14px' }}>{row.itemName}</TableCell>
+                      <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '14px' }}>{row.category}</TableCell>
+                      <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '14px' }}>{row.quantity}</TableCell>
+                      <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '14px' }}>{row.price}</TableCell>
                       <TableCell align="center">
                         <img
                           src={row.img}
                           alt={row.productName}
-                          style={{ width: '35px', height: '35px', margin: 'auto' }}
+                          style={{ width: '40px', height: '40px', margin: 'auto' }}
                         />
                       </TableCell>
                       <TableCell align="center">
-                        <Button variant="outlined" sx={{ marginRight: 2 }} color="success" onClick={() => handleUpdateUser(row)}>
+                        <Button 
+                          variant="outlined" 
+                          sx={{ 
+                            marginRight: 2, 
+                            color: '#FFFFFF', // Text color (white)
+                            backgroundColor: '#4CAF50', // Background color (green)
+                            '&:hover': { backgroundColor: '#388E3C' } // Hover background color (dark green)
+                          }} 
+                          onClick={() => handleUpdateUser(row)}
+                        >
                           Update
                         </Button>
-                        <Button variant="outlined" color="error" onClick={() => handleDelete(row._id)}>
+
+                        <Button 
+                          variant="outlined" 
+                          sx={{ 
+                            color: '#FFFFFF', // Text color (white)
+                            backgroundColor: '#F44336', // Background color (red)
+                            '&:hover': { backgroundColor: '#D32F2F' } // Hover background color (dark red)
+                          }} 
+                          onClick={() => handleDelete(row._id)}
+                        >
                           Delete
                         </Button>
                       </TableCell>
