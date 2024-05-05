@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Card, CardContent, Typography } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { apiUrl } from '../../utils/Constants';
 import authAxios from '../../utils/authAxios';
@@ -70,6 +70,18 @@ export default function ManageStaff() {
   };
 
   const handleSubmit = async () => {
+    // Phone number validation
+    if (formData.contactNo.length !== 10) {
+      toast.error('Phone number must be exactly 10 digits!');
+      return;
+    }
+
+    // Email validation
+    if (!formData.email.includes('@gmail.com')) {
+      toast.error('Email must be a valid Gmail address!');
+      return;
+    }
+
     try {
       const result = await authAxios.post(`${apiUrl}/user/create`, formData);
       if (result) {
@@ -132,7 +144,6 @@ export default function ManageStaff() {
   const handleGeneratePDF = () => {
     const doc = new jsPDF();
 
-
     // Header
     const header = [['First Name', 'Last Name', 'Email', 'Contact No', 'Role']];
     // Data
@@ -148,56 +159,54 @@ export default function ManageStaff() {
       startY: 20,
       margin: { top: 20 },
     });
-  
+
     doc.save("staff_members.pdf");
   };
+
   useEffect(() => {
     getUsers();
   }, []);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4" style={{ backgroundColor: '#C1E1C1' }}>
       <h2 className="text-2xl text-center my-4">Manage Staff</h2>
       <div className="flex justify-between items-center mb-4">
         <div>
-          <Button variant="contained" color="primary" onClick={handleSignupDialogOpen}>Add New Staff</Button>
+          <Button variant="contained" color="primary" style={{ backgroundColor: '#2E8B57', color: '#000' }} onClick={handleSignupDialogOpen}>Add New Staff</Button>
         </div>
         <div>
           <TextField id="search" label="Search by Role" variant="outlined" size="small" onChange={(e) => getUsers(e.target.value)} />
-          <Button variant="contained" color="primary" className="ml-2" onClick={handleGeneratePDF}>Generate PDF</Button>
+          <Button variant="contained" color="primary" style={{ backgroundColor: '#2E8B57', color: '#000' }} className="ml-2" onClick={handleGeneratePDF}>Generate PDF</Button>
         </div>
       </div>
 
       {!isLoading ? (
-        <TableContainer component={Paper} className="max-w-4xl mx-auto">
-          <Table>
-            <TableHead>
-              <TableRow className="bg-blue-200">
-                <TableCell className="text-white">First Name</TableCell>
-                <TableCell className="text-white">Last Name</TableCell>
-                <TableCell className="text-white">Email</TableCell>
-                <TableCell className="text-white">Contact No</TableCell>
-                <TableCell className="text-white">Role</TableCell>
-                <TableCell className="text-white">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users.filter(user => user.role !== 'customer' && user.role !=='driver').map(user => (
-                <TableRow key={user._id}>
-                  <TableCell>{user.firstName}</TableCell>
-                  <TableCell>{user.lastName}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.contactNo}</TableCell>
-                  <TableCell>{user.role}</TableCell>
-                  <TableCell>
-                    <Button variant="outlined" color="primary" className="mr-2" onClick={() => handleUpdateUser(user)}>Update</Button>
-                    <Button variant="outlined" color="error" startIcon={<Delete />} onClick={() => handleDeleteUser(user._id)}>Delete</Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <div>
+          {users.filter(user => user.role !== 'customer' && user.role !=='driver').map(user => (
+            <div key={user._id} className="flex justify-center items-center">
+              <Card className="bg-transparent" style={{ width: 650,height: 170, marginBottom: 20 }}>
+                <CardContent>
+                  <Typography variant="h5" component="h2">
+                    {user.firstName} {user.lastName}
+                  </Typography>
+                  <Typography color="textSecondary" gutterBottom>
+                    {user.email}
+                  </Typography>
+                  <Typography color="textSecondary" gutterBottom>
+                    {user.contactNo}
+                  </Typography>
+                  <Typography variant="body2" component="p">
+                    {user.role}
+                  </Typography>
+                  <div className="flex justify-center">
+                    <Button variant="contained" color="primary" style={{ backgroundColor: '#4CBB17', color: '#000', marginRight: 10 }} onClick={() => handleUpdateUser(user)}>Update</Button>
+                    <Button variant="contained" color="error" startIcon={<Delete />} onClick={() => handleDeleteUser(user._id)}>Delete</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
+        </div>
       ) : (
         <Loader />
       )}
