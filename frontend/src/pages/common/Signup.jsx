@@ -20,7 +20,7 @@ const Signup = () => {
         const data = new FormData(event.currentTarget);
         const payload = {
             email: data.get('email'),
-            password: data.get('password'),
+            password: data.get('password').toString(), // convert password to string data type
             contactNo: data.get('contactNo'),
             firstName: data.get('firstName'),
             lastName: data.get('lastName'),
@@ -47,6 +47,12 @@ const Signup = () => {
         }
         if (!payload.password.trim()) {
             validationErrors.password = "Password is required";
+        } else if (payload.password.trim().length < 8) {
+            validationErrors.password = "Password must be at least 8 characters long.";
+        } else if (
+            !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(payload.password.trim())
+        ) {
+            validationErrors.password = "Password must contain at least one uppercase letter, numeric & special character";
         }
 
         if (Object.keys(validationErrors).length > 0) {
