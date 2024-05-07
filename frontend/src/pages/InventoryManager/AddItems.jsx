@@ -6,7 +6,6 @@ import authAxios from "../../utils/authAxios";
 import { toast } from "react-toastify";
 
 export default function InventoryAddItems() {
-
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         itemName: '',
@@ -16,8 +15,31 @@ export default function InventoryAddItems() {
         img: ''
     });
 
+    const isValidUrl = (url) => {
+        // Regular expression to validate URL
+        const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
+        return urlPattern.test(url);
+    };
+
     const handleSubmit = async () => {
         try {
+            // Validating quantity and price as integers
+            if (formData.quantity === '' || isNaN(parseInt(formData.quantity))) {
+                toast.error("Quantity must be a valid integer.");
+                return;
+            }
+
+            if (formData.price === '' || isNaN(parseInt(formData.price))) {
+                toast.error("Price must be a valid integer.");
+                return;
+            }
+
+            // Validating image link as a URL
+            if (formData.img !== '' && !isValidUrl(formData.img)) {
+                toast.error("Image link must be a valid URL.");
+                return;
+            }
+
             const result = await authAxios.post(`${apiUrl}/item/create-product`, formData);
             if (result) {
                 toast.success(result.data.message);
@@ -32,11 +54,12 @@ export default function InventoryAddItems() {
 
     const handleCreate = (field, value) => {
         setFormData((prevData) => ({ ...prevData, [field]: value }));
-      };
+    };
 
-    return (<>
-        <div className="max-w-md mx-auto">
-            <h1 className="text-3xl text-center mb-6">Add Items</h1>
+    return (
+        <div className="max-w-md mx-auto" style={{ backgroundImage: 'url("https://files.123freevectors.com/wp-content/original/131405-light-orange-low-poly-background-design-vector.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '70vh',minWidth:'70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="max-w-md mx-auto">
+                <h1 className="text-3xl text-center mb-6">Add Item</h1>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={6}>
                         <TextField
@@ -82,29 +105,28 @@ export default function InventoryAddItems() {
                             onChange={(e) => handleCreate('price', e.target.value)}
                         />
                     </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Image Link"
+                            variant="outlined"
+                            value={formData.img}
+                            onChange={(e) => handleCreate('img', e.target.value)}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Image Link"
-                        variant="outlined"
-                        value={formData.img}
-                        onChange={(e) => handleCreate('img', e.target.value)}
-                    />
-                </Grid>
-
-            <br></br>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button onClick={() => handleSubmit()} style={{ backgroundColor: '#4CAF50', color: 'white', marginRight: '8px' }} variant="contained" fullWidth>
-                    Add
-                </Button>
-                <div style={{ width: '8px' }}></div> {/* This adds space between buttons */}
-                <Button style={{ backgroundColor: '#f44336', color: 'white' }} variant="contained" fullWidth component={Link} to="/inventory">
-                    Cancel
-                </Button>
+                <br />
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Button onClick={() => handleSubmit()} style={{ backgroundColor: '#4CAF50', color: 'white', marginRight: '8px' }} variant="contained" fullWidth>
+                        Add
+                    </Button>
+                    <div style={{ width: '8px' }}></div> {/* This adds space between buttons */}
+                    <Button style={{ backgroundColor: '#f44336', color: 'white' }} variant="contained" fullWidth component={Link} to="/inventory">
+                        Cancel
+                    </Button>
+                </div>
             </div>
-        </div>
-    </>
+       </div>
     );
 }
