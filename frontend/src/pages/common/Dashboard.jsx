@@ -195,6 +195,11 @@ export default function Dashboard() {
           setuserAPI('staff')
           setAuth(true);
         }
+        case "feedback": //feedback
+        if (userAPI != null) {
+          setuserAPI('feedback')
+          setAuth(true);
+        }
         setNavlinks(staffListItems);
         break;
       default:
