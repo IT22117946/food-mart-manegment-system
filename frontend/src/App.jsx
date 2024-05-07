@@ -47,6 +47,7 @@ import ManageStaff from './pages/StaffManager/ManageStaff';
 import Salary from './pages/StaffManager/Salary';
 import Ratings from './pages/Driver/Ratings';
 import OrderGoods from './pages/SupplierManager/OrderGoods';
+import FeedbackHome from './pages/FeedbackManager/Home';
 
 
 export default function App() {
@@ -128,6 +129,13 @@ export default function App() {
             <Route path='addnews' element={<AddNews />} />
             <Route path='profile' element={<UserProfile />} />
           </Route>
+
+          <Route path='/feedback' element={<Dashboard />}>
+            <Route path='' element={<FeedbackHome />} />
+            <Route path='home' element={<FeedbackHome />} />
+            <Route path='profile' element={<UserProfile />} />
+          </Route>
+
 
           <Route path='/delivery' element={<Dashboard />}>
             <Route path='' element={<DelveryHome />} />
