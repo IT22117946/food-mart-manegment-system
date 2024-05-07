@@ -259,6 +259,18 @@ export default function ManageStaff() {
                 />
                 <FormControlLabel
                   control={<Radio />}
+                  label="Admin"
+                  onChange={(e) => handleCheckboxChange('role', 'admin', e.target.checked)}
+                  checked={formData.role === 'admin'}
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label="Feedback"
+                  onChange={(e) => handleCheckboxChange('role', 'feedback', e.target.checked)}
+                  checked={formData.role === 'feedback'}
+                />
+                <FormControlLabel
+                  control={<Radio />}
                   label="Delivery"
                   onChange={(e) => handleCheckboxChange('role', 'delivery', e.target.checked)}
                   checked={formData.role === 'delivery'}
