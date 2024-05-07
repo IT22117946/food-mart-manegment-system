@@ -97,7 +97,7 @@ export default function Login() {
   };
 
   return (
-    <Container component="main" maxWidth="lg">
+    <Container component="main" maxWidth="lg" style={{backgroundImage: 'url("https://img.freepik.com/free-vector/geometric-gradient-futuristic-background_23-2149116406.jpg?size=626&ext=jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', minHeight: '100vh'}}>
       <Box sx={{ marginTop: 8 }}>
         <Grid container>
           <Grid
@@ -109,6 +109,8 @@ export default function Login() {
             component={Paper}
             elevation={6}
             square
+
+            style={{marginTop:70, backgroundColor: 'white', opacity: 0.85}}
           >
             <Box
               sx={{
@@ -148,10 +150,7 @@ export default function Login() {
                   id="password"
                   autoComplete="current-password"
                 />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
-                />
+              
                 <Button
                   type="submit"
                   fullWidth

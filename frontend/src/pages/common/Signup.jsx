@@ -75,7 +75,7 @@ const Signup = () => {
     };
 
     return (
-        <Container component="main" maxWidth="lg">
+        <Container component="main" maxWidth={'1000px'} style={{backgroundImage: 'url("https://img.freepik.com/free-vector/geometric-gradient-futuristic-background_23-2149116406.jpg?size=626&ext=jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', minHeight: '100vh'}}>
             <Box
                 sx={{
                     marginTop: 5,
@@ -91,6 +91,8 @@ const Signup = () => {
                         component={Paper}
                         elevation={6}
                         square
+
+                        style={{marginTop:55, backgroundColor: 'white', opacity: 0.9}}
                     >
                         <Box
                             sx={{
