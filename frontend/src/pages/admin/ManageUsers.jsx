@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material'; // Import MUI components
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow,Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material'; // Import MUI components
 import { Delete } from '@mui/icons-material'; // Import MUI Delete icon
 import { apiUrl } from '../../utils/Constants';
 import authAxios from '../../utils/authAxios';
@@ -7,6 +7,9 @@ import { toast } from 'react-toastify';
 import Loader from '../../components/Loader/Loader';
 import { RadioGroup, FormLabel, Radio, FormControlLabel, FormGroup } from '@mui/material';
 import jsPDF from 'jspdf';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
 
 export default function ManageUsers() {
 
@@ -161,48 +164,71 @@ export default function ManageUsers() {
   }, []);
 
   return (
-    <div>
-      <h1 className="text-2xl text-center font-bold mb-4">Customer Details</h1>
+    <div className="container mx-auto p-4" style={{ backgroundColor: '#A8E0FF' }}>
+      <h1 className="text-4xl text-center font-bold mb-4">Customer Details</h1>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         
-        <Button variant="contained" color="primary" style={{ marginBottom: '20px' }} onClick={handleGeneratePDF}>Generate PDF</Button>
-        
+        <Button variant="contained" color="primary" style={{backgroundColor: '#526CA3', marginBottom: '20px' }} onClick={handleGeneratePDF}>Generate PDF</Button>
         <TextField id="search" label="Search by Email" variant="outlined" size="small" onChange={(e) => getUsers(e.target.value)} />
       </div>
 
       {
-        !isLoading ? <>
-          <TableContainer component={Paper} className="max-w-4xl mx-auto" >
-            <Table>
-              <TableHead className="bg-blue-200">
-                <TableRow>
-                  <TableCell>First Name</TableCell>
-                  <TableCell>Last Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Contact No</TableCell>
-                  <TableCell>Role</TableCell>
-                  <TableCell>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {users.filter(user => user.role == 'customer').map(user => (
-                  <TableRow key={user._id}>
-                    <TableCell>{user.firstName}</TableCell>
-                    <TableCell>{user.lastName}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.contactNo}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                    <TableCell>
+        !isLoading ? (
+
+          <div>
+  {users.filter(user => user.role === 'customer').map((user, index) => (
+    index % 2 === 0 && (
+      <div key={user._id} className="flex justify-center">
+        <div className="flex">
+          <Card className="bg-transparent" style={{ width: 400, height: 135, marginBottom: 20, marginRight: 70 }}>
+          <CardContent>
+                      <Typography variant="h5" component="h2">
+                        {user.firstName} {user.lastName}
+                      </Typography>
+                      <Typography color="textSecondary" gutterBottom>
+                        {user.email}
+                      </Typography>
+                      <Typography color="textSecondary" gutterBottom>
+                        {user.contactNo}
+                      </Typography>
                       
-                      <Button variant="outlined" color="error" startIcon={<Delete />} onClick={() => handleDeleteUser(user._id)}></Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </> : <Loader />}
+                      <div className="flex justify-end" style = {{marginTop: -40}}>
+                        <Button variant="contained" color="error" startIcon={<Delete />} onClick={() => handleDeleteUser(user._id)}>Delete</Button>
+                      </div>
+           </CardContent>
+          </Card>
+          {users.filter(user => user.role === 'customer')[index + 1] && (
+            <Card className="bg-transparent" style={{ width: 400, height: 135, marginBottom: 20 }}>
+              <CardContent>
+                        <Typography variant="h5" component="h2">
+                          {users.filter(user => user.role === 'customer')[index + 1].firstName} {users.filter(user => user.role === 'customer')[index + 1].lastName}
+                        </Typography>
+                        <Typography color="textSecondary" gutterBottom>
+                          {users.filter(user => user.role === 'customer')[index + 1].email}
+                        </Typography>
+                        <Typography color="textSecondary" gutterBottom>
+                          {users.filter(user => user.role === 'customer')[index + 1].contactNo}
+                        </Typography>
+                        
+                        
+                        <div className="flex justify-end" style = {{marginTop: -40}}>
+                          <Button variant="contained" color="error" startIcon={<Delete />} onClick={() => handleDeleteUser(users[index + 1]._id)}>Delete</Button>
+                        </div>
+                      </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    )
+  ))}
+    </div>       
+            
+
+        ) : (<Loader />)}
+
+
+
       {/* Signup Dialog */}
       <Dialog open={openSignupDialog} onClose={handleDialogClose}>
         <DialogTitle>Add New User</DialogTitle>
