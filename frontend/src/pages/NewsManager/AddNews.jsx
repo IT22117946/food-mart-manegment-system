@@ -16,6 +16,7 @@ export default function AddNews() {
 
   const handleSubmit = async () => {
     try {
+      
       const result = await authAxios.post(`${apiUrl}/news`, formData);
       if (result) {
         toast.success(result.data.message);
