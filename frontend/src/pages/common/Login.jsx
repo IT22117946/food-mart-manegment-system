@@ -83,6 +83,10 @@ export default function Login() {
             toast.success('Login Success as a Driver')
             navigate('/driver/home');
             break;
+            case 'feedback': //feedback
+            toast.success('Login Success as the Feedback Manager')
+            navigate('/feedback/home');
+            break;
         }
         window.location.reload();
       }
