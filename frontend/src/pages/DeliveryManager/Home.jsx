@@ -140,14 +140,15 @@ const Home = () => {
   };
 
   return (
+   
     <>
-      <div className="flex justify-center">
+    
+      <div className="flex justify-center"  >
         <Typography style={{ margin: '20px 0', fontSize: '32px', fontWeight: 'bold', fontFamily: 'Times New Roman' }}>
           Delivery Dashboard
         </Typography>
       </div>
       <Button variant="contained" color="primary" style={{ marginBottom: '20px' }} onClick={handleGeneratePDF}>Generate PDF</Button>
-
       <Container maxWidth={'800px'}>
         <Paper sx={{ width: '100%', marginTop: 2 }}>
           <TableContainer sx={{ maxHeight: '100%' }}>
@@ -169,7 +170,7 @@ const Home = () => {
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell align="center">{index + 1}</TableCell>
-                    <TableCell align="center">{row.userId.firstName} {row.userId.lastName}</TableCell>
+                    <TableCell align="center">{row.userId ? `${row.userId.firstName} ${row.userId.lastName}` : 'N/A'}</TableCell>
                     <TableCell align="center">{new Date(row.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell align="center">{row.address}</TableCell>
                     <TableCell align="center" onClick={() => { handleClickOpen(row) }} className="cursor-pointer">
@@ -180,12 +181,7 @@ const Home = () => {
                       <Delete color="error" />
                     </TableCell>
                     
-                    {/* Change Driver button */}
-                    {row.driverId && row.status !== 'completed' && (
-                      <TableCell align="center">
-                        <Button onClick={() => { handleClickOpen(row) }}>Change Driver</Button>
-                      </TableCell>
-                    )}
+                    
 
                     {/* Dialog for assigning/changing a driver */}
                     <Dialog
@@ -202,7 +198,7 @@ const Home = () => {
                       }}
                     >
                       <DialogTitle id="alert-dialog-title">
-                        {"Assign a driver"}
+                        {"Assign a free driver"}
                       </DialogTitle>
                       <DialogContent>
                         <FormControl fullWidth variant="outlined">
@@ -241,8 +237,12 @@ const Home = () => {
           />
         </Paper>
       </Container>
+     
     </>
+    
   );
+ 
 };
+
 
 export default Home;
