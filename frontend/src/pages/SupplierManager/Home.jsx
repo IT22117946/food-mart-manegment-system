@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { apiUrl } from '../../utils/Constants';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import Stack from '@mui/material/Stack';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import jsPDF from 'jspdf';
@@ -29,6 +33,9 @@ export default function Home() {
     address: '',
     pDescription: ''
   });
+
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false);
+  const [selectedSupplierId, setSelectedSupplierId] = useState(null);
 
   useEffect(() => {
     fetchSuppliers();
@@ -107,6 +114,16 @@ export default function Home() {
         setAddSupplierDialogOpen(false);
         fetchSuppliers();
         toast.success('Supplier added successfully');
+
+        setAddFormData({
+          companyName: '',
+          name: '',
+          mobile: '',
+          email: '',
+          address: '',
+          pDescription: ''
+        });
+
       } else {
         console.error('Failed to add supplier');
       }
@@ -123,6 +140,8 @@ export default function Home() {
       if (response.ok) {
         fetchSuppliers();
         toast.success('Supplier deleted successfully');
+
+        setDeleteConfirmationDialogOpen(false);
       } else {
         console.error('Failed to delete supplier');
       }
@@ -135,12 +154,18 @@ export default function Home() {
     setSearchTerm(e.target.value);
   };
 
-  // const generatePDF = () => {
-  //     const doc = new jsPDF();
-  //     doc.text('Supplier List', 10, 10);
-  //     doc.autoTable({ html: '#supplierTable' });
-  //     doc.save('supplier_list.pdf');
-  // };
+  const isValidEmail = (email) => {
+    // Basic email validation using regular expression
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+
+  const isValidMobile = (mobile) => {
+    // Basic mobile number validation using regular expression
+    const regex = /^\d{10}$/;
+    return regex.test(mobile);
+  };
 
   const generatePDF = () => {
     const doc = new jsPDF();
@@ -188,45 +213,55 @@ export default function Home() {
           </div>
 
           <div className="flex mt-4">
+          <Stack spacing={2} direction="row">
             <Button variant="contained" onClick={() => setAddSupplierDialogOpen(true)} className="mr-2">Add Supplier</Button>
             <Button variant="contained" onClick={generatePDF}>Generate PDF</Button>
+          </Stack>
           </div>
 
         </div>
 
         <br></br>
         <table id="supplierTable" className="table-auto w-full rounded-t-lg">
-  <thead className="bg-blue-100">
-    <tr>
-      <th className="px-4 py-2">Company Name</th>
-      <th className="px-4 py-2">Supplier Name</th>
-      <th className="px-4 py-2">Phone</th>
-      <th className="px-4 py-2">Email</th>
-      <th className="px-4 py-2">Address</th>
-      <th className="px-4 py-2">Product Description</th>
-      <th className="px-4 py-2">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {filteredSuppliers.map(supplier => (
-      <tr key={supplier._id}>
-        <td className="border px-4 py-2">{supplier.companyName}</td>
-        <td className="border px-4 py-2">{supplier.name}</td>
-        <td className="border px-4 py-2">{supplier.mobile}</td>
-        <td className="border px-4 py-2">{supplier.email}</td>
-        <td className="border px-4 py-2">{supplier.address}</td>
-        <td className="border px-4 py-2">{supplier.pDescription}</td>
-        <td className="border px-4 py-2">
-          <button className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => fetchAndUpdateSupplier(supplier._id)}>Update</button>
-          <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => handleDelete(supplier._id)}>Delete</button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+          <thead className="bg-blue-100">
+            <tr>
+              <th className="px-4 py-2">Company Name</th>
+              <th className="px-4 py-2">Supplier Name</th>
+              <th className="px-4 py-2">Phone</th>
+              <th className="px-4 py-2">Email</th>
+              <th className="px-4 py-2">Address</th>
+              <th className="px-4 py-2">Product Description</th>
+              <th className="px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredSuppliers.map(supplier => (
+              <tr key={supplier._id}>
+                <td className="border px-4 py-2">{supplier.companyName}</td>
+                <td className="border px-4 py-2">{supplier.name}</td>
+                <td className="border px-4 py-2">{supplier.mobile}</td>
+                <td className="border px-4 py-2">{supplier.email}</td>
+                <td className="border px-4 py-2">{supplier.address}</td>
+                <td className="border px-4 py-2">{supplier.pDescription}</td>
+                <td className="border px-4 py-2">
 
-
-
+                <Stack spacing={2} direction="row">  
+                <IconButton aria-label="delete" size="large">
+                  <DeleteIcon fontSize="inherit" onClick={() => {
+                    // Show delete confirmation dialog
+                    setSelectedSupplierId(supplier._id);
+                    setDeleteConfirmationDialogOpen(true);
+                  }}/>
+                </IconButton>
+                <IconButton aria-label="edit" size="large">
+                  <EditIcon fontSize="inherit" onClick={() => fetchAndUpdateSupplier(supplier._id)}/>
+                </IconButton>
+                </Stack>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
           <DialogTitle>Update Supplier</DialogTitle>
@@ -261,6 +296,8 @@ export default function Home() {
                 fullWidth
                 margin="dense"
                 required
+                error={!isValidMobile(formData.mobile)}
+                helperText={!isValidMobile(formData.mobile) && "Invalid mobile number"}
               />
               <TextField
                 id="email"
@@ -271,7 +308,10 @@ export default function Home() {
                 fullWidth
                 margin="dense"
                 required
+                error={!isValidEmail(formData.email)}
+                helperText={!isValidEmail(formData.email) && "Invalid email address"}
               />
+
               <TextField
                 id="address"
                 name="address"
@@ -333,6 +373,8 @@ export default function Home() {
                 fullWidth
                 margin="dense"
                 required
+                error={addFormData.mobile.trim() !== '' && !isValidMobile(addFormData.mobile)}
+                helperText={addFormData.mobile.trim() !== '' && !isValidMobile(addFormData.mobile) && "Invalid mobile number"}
               />
               <TextField
                 id="email"
@@ -343,7 +385,10 @@ export default function Home() {
                 fullWidth
                 margin="dense"
                 required
+                error={addFormData.email.trim() !== '' && !isValidEmail(addFormData.email)}
+                helperText={addFormData.email.trim() !== '' && !isValidEmail(addFormData.email) && "Invalid email address"}
               />
+
               <TextField
                 id="address"
                 name="address"
@@ -370,6 +415,20 @@ export default function Home() {
               </DialogActions>
             </form>
           </DialogContent>
+        </Dialog>
+
+        <Dialog open={deleteConfirmationDialogOpen} onClose={() => setDeleteConfirmationDialogOpen(false)}>
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogContent>
+            <p>Are you sure you want to delete this supplier?</p>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDeleteConfirmationDialogOpen(false)}>Cancel</Button>
+            <Button onClick={() => {
+              handleDelete(selectedSupplierId);
+              setDeleteConfirmationDialogOpen(false);
+            }} variant="contained" color="primary">Delete</Button>
+          </DialogActions>
         </Dialog>
 
         <ToastContainer />
