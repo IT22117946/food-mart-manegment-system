@@ -103,8 +103,8 @@ const Home = () => {
     }
   };
 
-  const [regUsers] = useState(100); // Example value
-  const [staff] = useState(20); // Example value
+  const [regUsers] = useState(4); // Example value
+  const [staff] = useState(10); // Example value
   const currentDate = format(new Date(), 'MMMM dd, yyyy');
 
   return (
@@ -218,7 +218,7 @@ const Home = () => {
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell align="center">{index + 1}</TableCell>
-                    <TableCell align="center">{row.userId.firstName} {row.userId.lastName}</TableCell>
+                    <TableCell align="center">{row.userId ? `${row.userId.firstName} ${row.userId.lastName}` : 'Unknown'}</TableCell>
                     <TableCell align="center">{new Date(row.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell align="center">{row.price}</TableCell>
                     <TableCell align="center" onClick={() => { handleClickOpen(row) }} className="cursor-pointer"><Visibility /></TableCell>
@@ -234,8 +234,7 @@ const Home = () => {
                         <ToggleButton value="active" color="success">Active</ToggleButton>
                       </ToggleButtonGroup>
                     </TableCell>
-                    <TableCell align="center" onClick={() => {removeOrder(row._id)}} className="cursor-pointer"> <Delete color="error" /></TableCell>
-
+                    <TableCell align="center" onClick={() => { removeOrder(row._id) }} className="cursor-pointer"> <Delete color="error" /></TableCell>
 
                     <Dialog
                       open={open}
@@ -272,8 +271,8 @@ const Home = () => {
                         </Button>
                       </DialogActions>
                     </Dialog>
+                    
                   </TableRow>
-
                 ))}
               </TableBody>
             </Table>
