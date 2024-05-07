@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material'; // Import MUI components
-import { Delete } from '@mui/icons-material'; // Import MUI Delete icon
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 import { apiUrl } from '../../utils/Constants';
 import authAxios from '../../utils/authAxios';
 import { toast } from 'react-toastify';
@@ -41,7 +41,6 @@ export default function AddDriver() {
     });
   };
 
-  // Function to handle opening dialog for signup
   const handleSignupDialogOpen = () => {
     setOpenSignupDialog(true);
   };
@@ -50,12 +49,10 @@ export default function AddDriver() {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
 
-  // Use this function to handle changes in checkboxes
   const handleCheckboxChange = (field, value) => {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
 
-  // Function to handle closing dialogs
   const handleDialogClose = () => {
     setOpenSignupDialog(false);
     setOpenUpdateDialog(false);
@@ -68,7 +65,53 @@ export default function AddDriver() {
     });
   };
 
+  const validateContactNo = (contactNo) => {
+    return /^\d{10}$/.test(contactNo); // Validates 10 digits
+  };
+
+  const validateEmail = (email) => {
+    // Regular expression for email validation
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePassword = (password) => {
+    // Password length should be at least 6 characters
+    return password.length >= 6;
+  };
+
+  const validateForm = () => {
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.password ||
+      !formData.contactNo
+    ) {
+      toast.error('All fields are required.');
+      return false;
+    }
+
+    if (!validateContactNo(formData.contactNo)) {
+      toast.error('Please enter a valid 10-digit contact number.');
+      return false;
+    }
+
+    if (!validateEmail(formData.email)) {
+      toast.error('Please enter a valid email address.');
+      return false;
+    }
+
+    if (!validatePassword(formData.password)) {
+      toast.error('Password should be at least 6 characters long.');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) return;
+
     try {
       const result = await authAxios.post(`${apiUrl}/user/create`, formData);
       if (result) {
@@ -77,12 +120,13 @@ export default function AddDriver() {
       getUsers();
       setOpenSignupDialog(false);
     } catch (error) {
-      //console.log(error);
       toast.error(error.response.data.message);
     }
   };
 
   const handleUpdate = async () => {
+    if (!validateForm()) return;
+
     try {
       const result = await authAxios.put(`${apiUrl}/user/update-account/${updateFormData._id}`, updateFormData);
       if (result) {
@@ -114,7 +158,7 @@ export default function AddDriver() {
     try {
       const res = await authAxios.get(`${apiUrl}/user/all`);
       if (nameFilter) {
-        const lowercaseFilter = nameFilter.toLowerCase(); // Convert filter to lowercase
+        const lowercaseFilter = nameFilter.toLowerCase();
         setUsers(res.data.filter(user => user.firstName.toLowerCase() === lowercaseFilter));
       } else {
         setUsers(res.data);
@@ -129,7 +173,7 @@ export default function AddDriver() {
       }
     }
   };
-  
+
 
   useEffect(() => {
     getUsers();
@@ -174,14 +218,14 @@ export default function AddDriver() {
             </Table>
           </TableContainer>
         </> : <Loader />}
-      {/* Signup Dialog */}
+
       <Dialog open={openSignupDialog} onClose={handleDialogClose}>
         <DialogTitle>Add New Driver</DialogTitle>
         <DialogContent>
           <form>
             <TextField required label="First Name" margin="normal" name="firstName" value={formData.firstName} onChange={(e) => handleCreateUser('firstName', e.target.value)} fullWidth />
             <TextField required label="Last Name" margin="normal" name="lastName" value={formData.lastName} onChange={(e) => handleCreateUser('lastName', e.target.value)} fullWidth />
-            <TextField required label="Contact No" margin="normal" name="contactNo" value={formData.contactNo} onChange={(e) => handleCreateUser('contactNo', e.target.value)} fullWidth />
+            <TextField required label="Contact No" margin="normal" name="contactNo" value={formData.contactNo} onChange={(e) => handleCreateUser('contactNo', e.target.value)} fullWidth inputProps={{ maxLength: 10 }} />
             <TextField required label="Email" margin="normal" name="email" value={formData.email} onChange={(e) => handleCreateUser('email', e.target.value)} fullWidth />
             <TextField required label="Password" margin="normal" name="password" value={formData.password} onChange={(e) => handleCreateUser('password', e.target.value)} fullWidth />
           </form>
@@ -191,7 +235,6 @@ export default function AddDriver() {
           <Button onClick={handleDialogClose} color="secondary">Cancel</Button>
         </DialogActions>
       </Dialog>
-      {/* Update Dialog */}
       <Dialog open={openUpdateDialog} onClose={handleDialogClose}>
         <DialogTitle>Update Driver</DialogTitle>
         <DialogContent>
@@ -224,7 +267,9 @@ export default function AddDriver() {
             variant="outlined"
             onChange={(e) => setUpdateFormData({ ...updateFormData, contactNo: e.target.value })}
             value={updateFormData.contactNo}
+            inputProps={{ maxLength: 10 }} // Set maximum length to 10 digits
           />
+
           <TextField
             required
             id="outlined-read-only-input"
