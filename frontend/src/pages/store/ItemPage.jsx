@@ -1,3 +1,4 @@
+User
 import { useParams } from 'react-router-dom';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -368,6 +369,5 @@ export default function ItemPage() {
                 </Dialog>
             </div>
         </div>
-    );
-}
+    );}
 
