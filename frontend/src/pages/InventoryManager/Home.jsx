@@ -212,7 +212,8 @@ const Home = () => {
 </Button>
 
       </Box>
-      <Paper sx={{ width: '100%', marginTop: 2, backgroundColor: 'transparent' }}> {/* Another shade of orange */}
+      <Paper sx={{ width: '100%', marginTop: 2, backgroundColor: 'rgba(255, 210, 200, 0.2)' }}> {/* Another shade of orange */} 
+
         {
           !isLoading ? <>
             <TableContainer sx={{ maxHeight: '100%' }}>
