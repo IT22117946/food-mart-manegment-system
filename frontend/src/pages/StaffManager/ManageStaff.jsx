@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Card, CardContent, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { apiUrl } from '../../utils/Constants';
 import authAxios from '../../utils/authAxios';
@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import Loader from '../../components/Loader/Loader';
 import { RadioGroup, FormLabel, Radio, FormControlLabel, FormGroup } from '@mui/material';
 import jsPDF from 'jspdf';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 export default function ManageStaff() {
 
@@ -181,32 +182,35 @@ export default function ManageStaff() {
       </div>
 
       {!isLoading ? (
-        <div>
-          {users.filter(user => user.role !== 'customer' && user.role !=='driver').map(user => (
-            <div key={user._id} className="flex justify-center items-center">
-              <Card className="bg-transparent" style={{ width: 650,height: 170, marginBottom: 20 }}>
-                <CardContent>
-                  <Typography variant="h5" component="h2">
-                    {user.firstName} {user.lastName}
-                  </Typography>
-                  <Typography color="textSecondary" gutterBottom>
-                    {user.email}
-                  </Typography>
-                  <Typography color="textSecondary" gutterBottom>
-                    {user.contactNo}
-                  </Typography>
-                  <Typography variant="body2" component="p">
-                    {user.role}
-                  </Typography>
-                  <div className="flex justify-center">
+        <TableContainer component={Paper}>
+          <Table style={{ border: '2px solid #2E8B57' }}>
+            <TableHead>
+              <TableRow style={{ backgroundColor: '#2E8B57' }}>
+                <TableCell style={{ color: '#fff', fontWeight: 'bold', fontSize: '16px', border: '1px solid #2E8B57' }}>First Name</TableCell>
+                <TableCell style={{ color: '#fff', fontWeight: 'bold', fontSize: '16px', border: '1px solid #2E8B57' }}>Last Name</TableCell>
+                <TableCell style={{ color: '#fff', fontWeight: 'bold', fontSize: '16px', border: '1px solid #2E8B57' }}>Email</TableCell>
+                <TableCell style={{ color: '#fff', fontWeight: 'bold', fontSize: '16px', border: '1px solid #2E8B57' }}>Contact No</TableCell>
+                <TableCell style={{ color: '#fff', fontWeight: 'bold', fontSize: '16px', border: '1px solid #2E8B57' }}>Role</TableCell>
+                <TableCell style={{ color: '#fff', fontWeight: 'bold', fontSize: '16px', border: '1px solid #2E8B57' }}>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.filter(user => user.role !== 'customer' && user.role !=='driver').map(user => (
+                <TableRow key={user._id} style={{ border: '1px solid #2E8B57' }}>
+                  <TableCell style={{ fontWeight: 'bold', fontSize: '14px', border: '1px solid #2E8B57' }}>{user.firstName}</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', fontSize: '14px', border: '1px solid #2E8B57' }}>{user.lastName}</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', fontSize: '14px', border: '1px solid #2E8B57' }}>{user.email}</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', fontSize: '14px', border: '1px solid #2E8B57' }}>{user.contactNo}</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', fontSize: '14px', border: '1px solid #2E8B57' }}>{user.role}</TableCell>
+                  <TableCell style={{ fontWeight: 'bold', fontSize: '14px', border: '1px solid #2E8B57' }}>
                     <Button variant="contained" color="primary" style={{ backgroundColor: '#4CBB17', color: '#000', marginRight: 10 }} onClick={() => handleUpdateUser(user)}>Update</Button>
                     <Button variant="contained" color="error" startIcon={<Delete />} onClick={() => handleDeleteUser(user._id)}>Delete</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
-        </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       ) : (
         <Loader />
       )}
