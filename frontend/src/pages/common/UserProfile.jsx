@@ -110,11 +110,11 @@ const UserProfile = () => {
   }, []);
 
   return (
-    <CenteredContainer container>
+    <CenteredContainer container style={{backgroundImage: 'url("https://img.freepik.com/free-vector/gradient-network-connection-background_23-2148865393.jpg?size=626&ext=jpg&ga=GA1.1.1886760013.1715074658&semt=ais_user")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', minHeight: '100vh'}}>
       {
         !isLoading ? <>
           <Grid item xs={12} sm={8} md={6} lg={4}>
-            <ProfilePaper elevation={3}>
+            <ProfilePaper elevation={3} style={{ backgroundColor: '#CAE8F6',opacity: 0.9}}>
               {/* Avatar */}
               <Avatar {...stringAvatar(`${user.firstName} ${user.lastName}`)}
                 sx={{ width: 100, height: 100, margin: '0 auto' }}
