@@ -220,7 +220,7 @@ export default function Review() {
             id="panel1bh-header"
           >
             <Typography sx={{ width: '33%', flexShrink: 0 }}>
-            {review.userId ? `{review.userId.firstName} {review.userId.lastName}` : 'N/A'}
+            {review.userId ? `${review.userId.firstName} ${review.userId.lastName}` : 'N/A'}
             </Typography>
             <Rating name="disabled" value={review.rate} disabled />
           </AccordionSummary>

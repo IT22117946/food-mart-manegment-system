@@ -60,8 +60,7 @@ const Home = () => {
       _id: row._id,
       title: row.title,
       description: row.description,
-      quantity: row.quantity,
-      price: row.price,
+     
       img: row.img,
     });
   };
