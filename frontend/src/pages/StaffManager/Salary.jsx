@@ -164,7 +164,7 @@ export default function Salary() {
 
 
   return (
-    <div className="flex flex-col items-center" style={{ backgroundImage: "url('https://static.vecteezy.com/system/resources/previews/015/568/009/original/businessman-and-lot-of-money-office-employee-salary-and-bonus-rich-and-successful-man-sits-at-table-green-pile-of-banknotes-cartoon-flat-illustration-vector.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
+    <div className="flex flex-col items-center" style={{ backgroundColor: '#C1E1C1', minHeight: '100vh' }}>
       <h2 className="text-xl font-bold mb-4">Salary Details</h2>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button variant="contained" style={{ marginBottom: '20px', marginRight: '50px', backgroundColor: '#009E60', color: '#fff' }} onClick={handleDialogOpen}>Create Salary</Button>
@@ -225,7 +225,7 @@ export default function Salary() {
 
       <div className="flex flex-wrap justify-center">
         {salaries.map((salary) => (
-          <Card key={salary._id} className="m-2" style={{ backgroundColor: '#C1E1C1', maxWidth: '300px' }}>
+          <Card key={salary._id} className="m-2" style={{ backgroundColor: '#fff', border: '2px solid #009E60', maxWidth: '300px' }}>
             <CardContent>
               <div>
                 <strong>User Name:</strong> {salary.userId.firstName} {salary.userId.lastName}
