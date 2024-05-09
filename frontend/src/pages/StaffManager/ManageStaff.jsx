@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'; // Importing Material-UI components
-import { Delete } from '@mui/icons-material'; // Icon component
-import { apiUrl } from '../../utils/Constants'; // API URL constant
-import authAxios from '../../utils/authAxios'; // Axios instance with authentication
-import { toast } from 'react-toastify'; // Toast notification library
-import Loader from '../../components/Loader/Loader'; // Loading spinner component
-import { RadioGroup, FormLabel, Radio, FormControlLabel, FormGroup } from '@mui/material'; // Radio button components
-import jsPDF from 'jspdf'; // Library for generating PDFs
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'; // Table components
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material';
+import { Delete } from '@mui/icons-material';
+import { apiUrl } from '../../utils/Constants';
+import authAxios from '../../utils/authAxios';
+import { toast } from 'react-toastify';
+import Loader from '../../components/Loader/Loader';
+import { RadioGroup, FormLabel, Radio, FormControlLabel, FormGroup } from '@mui/material';
+import jsPDF from 'jspdf';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
-// Functional component for managing staff
 export default function ManageStaff() {
 
-  // State variables
-  const [users, setUsers] = useState([]); // Store the list of users
-  const [openSignupDialog, setOpenSignupDialog] = useState(false); // State for opening/closing the signup dialog
-  const [openUpdateDialog, setOpenUpdateDialog] = useState(false); // State for opening/closing the update dialog
-  const [isLoading, setIsLoading] = useState(true); // State for loading indicator
-  const [formData, setFormData] = useState({ // Form data for creating a new user
+  const [users, setUsers] = useState([]);
+  const [openSignupDialog, setOpenSignupDialog] = useState(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
@@ -26,7 +24,7 @@ export default function ManageStaff() {
     role: '',
   });
 
-  const [updateFormData, setUpdateFormData] = useState({ // Form data for updating a user
+  const [updateFormData, setUpdateFormData] = useState({
     _id: '',
     firstName: '',
     lastName: '',
@@ -35,10 +33,9 @@ export default function ManageStaff() {
     role: '',
   });
 
-  // Function to handle updating a user
   const handleUpdateUser = (row) => {
-    setOpenUpdateDialog(true); // Open the update dialog
-    setUpdateFormData({ // Set form data for updating the selected user
+    setOpenUpdateDialog(true);
+    setUpdateFormData({
       _id: row._id,
       firstName: row.firstName,
       lastName: row.lastName,
@@ -48,26 +45,22 @@ export default function ManageStaff() {
     });
   };
 
-  // Function to handle opening the signup dialog
   const handleSignupDialogOpen = () => {
-    setOpenSignupDialog(true); // Open the signup dialog
+    setOpenSignupDialog(true);
   };
 
-  // Function to update the form data when creating a user
   const handleCreateUser = (field, value) => {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
 
-  // Function to handle checkbox change (role selection)
   const handleCheckboxChange = (field, value) => {
     setFormData((prevData) => ({ ...prevData, [field]: value }));
   };
 
-  // Function to handle closing the dialog
   const handleDialogClose = () => {
-    setOpenSignupDialog(false); // Close the signup dialog
-    setOpenUpdateDialog(false); // Close the update dialog
-    setFormData({ // Clear form data
+    setOpenSignupDialog(false);
+    setOpenUpdateDialog(false);
+    setFormData({
       firstName: '',
       lastName: '',
       email: '',
@@ -77,7 +70,6 @@ export default function ManageStaff() {
     });
   };
 
-  // Function to handle form submission when creating a user
   const handleSubmit = async () => {
     // Phone number validation
     if (formData.contactNo.length !== 10) {
@@ -92,70 +84,66 @@ export default function ManageStaff() {
     }
 
     try {
-      const result = await authAxios.post(`${apiUrl}/user/create`, formData); // Send POST request to create user
+      const result = await authAxios.post(`${apiUrl}/user/create`, formData);
       if (result) {
-        toast.success('Staff Member Account Created Successfully!'); // Display success message
+        toast.success('Staff Member Account Created Successfully!');
       }
-      getUsers(); // Refresh the list of users
-      setOpenSignupDialog(false); // Close the signup dialog
+      getUsers();
+      setOpenSignupDialog(false);
     } catch (error) {
-      toast.error(error.response.data.message); // Display error message
+      toast.error(error.response.data.message);
     }
   };
 
-  // Function to handle updating a user
   const handleUpdate = async () => {
     try {
-      const result = await authAxios.put(`${apiUrl}/user/update-account/${updateFormData._id}`, updateFormData); // Send PUT request to update user
+      const result = await authAxios.put(`${apiUrl}/user/update-account/${updateFormData._id}`, updateFormData);
       if (result) {
-        getUsers(); // Refresh the list of users
-        toast.success('Staff Member Updated Successfully!'); // Display success message
-        handleDialogClose(); // Close the update dialog
+        getUsers();
+        toast.success('Staff Member Updated Successfully!');
+        handleDialogClose();
       }
     } catch (error) {
-      toast.error(error.response.data.message); // Display error message
+      toast.error(error.response.data.message);
     }
   };
 
-  // Function to handle deleting a user
   const handleDeleteUser = async (id) => {
     try {
-      const result = await authAxios.delete(`${apiUrl}/user/delete-account/${id}`); // Send DELETE request to delete user
+      const result = await authAxios.delete(`${apiUrl}/user/delete-account/${id}`);
 
       if (result) {
-        getUsers(); // Refresh the list of users
-        toast.warning('Staff Member Deleted Successfully!'); // Display success message
+        getUsers();
+        toast.warning('Staff Member Deleted Successfully!');
       }
     } catch (error) {
-      toast.error(error.response.data.message); // Display error message
+      toast.error(error.response.data.message);
     } finally {
-      refreshPage(); // Refresh the page (if needed)
+      refreshPage();
     }
   };
 
-  // Function to fetch users from the server
   const getUsers = async (roleFilter) => {
     try {
-      const res = await authAxios.get(`${apiUrl}/user/all`); // Send GET request to fetch all users
+      const res = await authAxios.get(`${apiUrl}/user/all`);
       if (roleFilter) {
-        setUsers(res.data.filter(user => user.role === roleFilter)); // Filter users by role if specified
+        setUsers(res.data.filter(user => user.role === roleFilter));
       } else {
-        setUsers(res.data); // Set the list of users
+        setUsers(res.data);
       }
-      setIsLoading(false); // Disable loading indicator
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
       if (error.response && error.response.status === 404) {
-        toast.error('Staff Members not found'); // Display error message if users not found
+        toast.error('Staff Members not found');
       } else {
-        toast.error(error.response?.data?.message || 'An error occurred while getting all staff members!'); // Display generic error message
+        toast.error(error.response?.data?.message || 'An error occurred while getting all staff members!');
       }
     }
   };
 
-  // Function to generate a PDF with the list of staff members
   const handleGeneratePDF = () => {
-    const doc = new jsPDF(); // Create a new PDF document
+    const doc = new jsPDF();
 
     // Header
     const header = [['First Name', 'Last Name', 'Email', 'Contact No', 'Role']];
@@ -173,12 +161,11 @@ export default function ManageStaff() {
       margin: { top: 20 },
     });
 
-    doc.save("staff_members.pdf"); // Save the PDF file
+    doc.save("staff_members.pdf");
   };
 
-  // Fetch users when component mounts
   useEffect(() => {
-    getUsers(); // Fetch all users
+    getUsers();
   }, []);
 
   return (
@@ -194,11 +181,10 @@ export default function ManageStaff() {
         </div>
       </div>
 
-      {!isLoading ? ( // If loading is complete
+      {!isLoading ? (
         <TableContainer component={Paper}>
           <Table style={{ border: '2px solid #2E8B57' }}>
             <TableHead>
-              {/* Table header */}
               <TableRow style={{ backgroundColor: '#2E8B57' }}>
                 <TableCell style={{ color: '#fff', fontWeight: 'bold', fontSize: '16px', border: '1px solid #2E8B57' }}>First Name</TableCell>
                 <TableCell style={{ color: '#fff', fontWeight: 'bold', fontSize: '16px', border: '1px solid #2E8B57' }}>Last Name</TableCell>
@@ -209,7 +195,6 @@ export default function ManageStaff() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {/* Table rows */}
               {users.filter(user => user.role !== 'customer' && user.role !=='driver').map(user => (
                 <TableRow key={user._id} style={{ border: '1px solid #2E8B57' }}>
                   <TableCell style={{ fontWeight: 'bold', fontSize: '14px', border: '1px solid #2E8B57' }}>{user.firstName}</TableCell>
@@ -218,7 +203,6 @@ export default function ManageStaff() {
                   <TableCell style={{ fontWeight: 'bold', fontSize: '14px', border: '1px solid #2E8B57' }}>{user.contactNo}</TableCell>
                   <TableCell style={{ fontWeight: 'bold', fontSize: '14px', border: '1px solid #2E8B57' }}>{user.role}</TableCell>
                   <TableCell style={{ fontWeight: 'bold', fontSize: '14px', border: '1px solid #2E8B57' }}>
-                    {/* Action buttons */}
                     <Button variant="contained" color="primary" style={{ backgroundColor: '#4CBB17', color: '#000', marginRight: 10 }} onClick={() => handleUpdateUser(user)}>Update</Button>
                     <Button variant="contained" color="error" startIcon={<Delete />} onClick={() => handleDeleteUser(user._id)}>Delete</Button>
                   </TableCell>
@@ -228,15 +212,75 @@ export default function ManageStaff() {
           </Table>
         </TableContainer>
       ) : (
-        <Loader /> // Show loading spinner while fetching data
+        <Loader />
       )}
 
-      {/* Signup dialog */}
       <Dialog open={openSignupDialog} onClose={handleDialogClose}>
         <DialogTitle>Add New Staff</DialogTitle>
         <DialogContent>
           <form>
-            {/* Form fields for creating a new user */}
+            <TextField required label="First Name" margin="normal" name="firstName" value={formData.firstName} onChange={(e) => handleCreateUser('firstName', e.target.value)} fullWidth />
+            <TextField required label="Last Name" margin="normal" name="lastName" value={formData.lastName} onChange={(e) => handleCreateUser('lastName', e.target.value)} fullWidth />
+            <TextField required label="Contact No" margin="normal" name="contactNo" value={formData.contactNo} onChange={(e) => handleCreateUser('contactNo', e.target.value)} fullWidth />
+            <TextField required label="Email" margin="normal" name="email" value={formData.email} onChange={(e) => handleCreateUser('email', e.target.value)} fullWidth />
+            <TextField required label="Password" margin="normal" name="password" value={formData.password} onChange={(e) => handleCreateUser('password', e.target.value)} fullWidth />
+            <FormGroup>
+              <FormLabel id="demo-radio-buttons-group-label">Role</FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+              >
+                <FormControlLabel
+                  control={<Radio />}
+                  label="Staff"
+                  onChange={(e) => handleCheckboxChange('role', 'staff', e.target.checked)}
+                  checked={formData.role === 'staff'}
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label="Supplier"
+                  onChange={(e) => handleCheckboxChange('role', 'supplier', e.target.checked)}
+                  checked={formData.role === 'supplier'}
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label="Inventory"
+                  onChange={(e) => handleCheckboxChange('role', 'inventory', e.target.checked)}
+                  checked={formData.role === 'inventory'}
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label="Order"
+                  onChange={(e) => handleCheckboxChange('role', 'order', e.target.checked)}
+                  checked={formData.role === 'order'}
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label="News"
+                  onChange={(e) => handleCheckboxChange('role', 'news', e.target.checked)}
+                  checked={formData.role === 'news'}
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label="Admin"
+                  onChange={(e) => handleCheckboxChange('role', 'admin', e.target.checked)}
+                  checked={formData.role === 'admin'}
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label="Feedback"
+                  onChange={(e) => handleCheckboxChange('role', 'feedback', e.target.checked)}
+                  checked={formData.role === 'feedback'}
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label="Delivery"
+                  onChange={(e) => handleCheckboxChange('role', 'delivery', e.target.checked)}
+                  checked={formData.role === 'delivery'}
+                />
+              </RadioGroup>
+            </FormGroup>
           </form>
         </DialogContent>
         <DialogActions>
@@ -245,11 +289,60 @@ export default function ManageStaff() {
         </DialogActions>
       </Dialog>
 
-      {/* Update dialog */}
       <Dialog open={openUpdateDialog} onClose={handleDialogClose}>
         <DialogTitle>Update Staff</DialogTitle>
         <DialogContent>
-          {/* Form fields for updating a user */}
+          <TextField
+            required
+            id="outlined-read-only-input"
+            label="First Name"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            onChange={(e) => setUpdateFormData({ ...updateFormData, firstName: e.target.value })}
+            value={updateFormData.firstName}
+          />
+          <TextField
+            required
+            id="outlined-read-only-input"
+            label="Last Name"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            onChange={(e) => setUpdateFormData({ ...updateFormData, lastName: e.target.value })}
+            value={updateFormData.lastName}
+          />
+          <TextField
+            required
+            id="outlined-read-only-input"
+            label="Contact No"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            onChange={(e) => setUpdateFormData({ ...updateFormData, contactNo: e.target.value })}
+            value={updateFormData.contactNo}
+          />
+          <TextField
+            required
+            id="outlined-read-only-input"
+            label="Email"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            onChange={(e) => setUpdateFormData({ ...updateFormData, email: e.target.value })}
+            value={updateFormData.email}
+          />
+          <TextField
+            required
+            id="outlined-read-only-input"
+            label="Role"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            onChange={(e) => setUpdateFormData({ ...updateFormData, role: e.target.value })}
+            value={updateFormData.role}
+            disabled
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleUpdate} color="primary">Submit</Button>
