@@ -39,9 +39,7 @@ export default function Hotdeals() {
               {'"a benevolent smile"'}
             </Typography>
           </CardContent>
-          <CardActions>
-            <Button size="small">Learn More</Button>
-          </CardActions>
+          
         </Card>
         <Card sx={{ minWidth: 275, marginRight: 5 }}>
           <CardContent>
@@ -57,9 +55,7 @@ export default function Hotdeals() {
               {'"a benevolent smile"'}
             </Typography>
           </CardContent>
-          <CardActions>
-            <Button size="small">Learn More</Button>
-          </CardActions>
+          
         </Card>
       </div>
     </div>
