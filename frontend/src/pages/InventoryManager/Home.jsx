@@ -18,6 +18,8 @@ import authAxios from '../../utils/authAxios';
 import { toast } from 'react-toastify';
 import Loader from '../../components/Loader/Loader';
 import { jsPDF } from 'jspdf';
+import { ForkRight } from '@mui/icons-material';
+import { Check, Clear } from '@material-ui/icons';
 
 const Home = () => {
   const [page, setPage] = useState(0);
