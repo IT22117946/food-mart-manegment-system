@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Typography, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, Container, Typography, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions, FormControl, InputLabel, Select, MenuItem, Chip, Avatar } from '@mui/material';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -117,13 +117,13 @@ const Home = () => {
 
   const generatePDF = () => {
     const doc = new jsPDF();
-  
+
     // Set Header
     const header = 'Inventory';
     const textWidth = doc.getStringUnitWidth(header) * doc.internal.getFontSize() / doc.internal.scaleFactor;
     const pageWidth = doc.internal.pageSize.getWidth();
     const x = (pageWidth - textWidth) / 2;
-  
+
     // Function to add table content for each page
     const addPageContent = (start, end) => {
       const tableRows = [];
@@ -136,17 +136,17 @@ const Home = () => {
         ];
         tableRows.push(rowData);
       });
-  
+
       doc.autoTable({
         head: [['Name', 'Category', 'Quantity', 'Price']],
         body: tableRows,
         startY: 20,
       });
     };
-  
+
     let startRow = 0;
     let endRow = rowsPerPage;
-  
+
     // Add pages until all rows are added
     while (startRow < items.length) {
       addPageContent(startRow, endRow);
@@ -156,72 +156,70 @@ const Home = () => {
         doc.addPage();
       }
     }
-  
+
     // Add Header to each page
     for (let i = 1; i <= doc.getNumberOfPages(); i++) {
       doc.setPage(i);
       doc.text(x, 10, header);
     }
-  
+
     // Save the PDF
     doc.save('inventory.pdf');
   };
-  
+
 
   return (
     <Container maxWidth={'800px'} style={{backgroundImage: 'url("https://www.shutterstock.com/image-photo/blur-warehouse-inventory-product-stock-600nw-1044779980.jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', minHeight: '100vh'}}>
-      <WelcomeCardInventory />
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          marginBottom: 4,
-          backgroundColor: '#FED8B1', // Shade of orange
-        }}
-      >
-        <InputBase
-          placeholder="  Search…"
-          sx={{ ml: 1, width: 200,backgroundColor: '#FFB645', border: '1px solid #ccc', borderRadius: 3 }}
-          onChange={handleSearchChange}
-        />
-        <IconButton sx={{ p: '10px', marginRight: 2 }} aria-label="search">
-          <SearchIcon />
-        </IconButton>
-        <Button 
-  variant="outlined" 
-  sx={{ 
-    marginRight: 2, 
-    color: '#FFFFFF', // Text color (white)
-    backgroundColor: '#4CAF50', // Background color (green)
-    '&:hover': { backgroundColor: '#388E3C' } // Hover background color (dark green)
-  }} 
-  component={Link} 
-  to="/inventory/add-item"
+    <WelcomeCardInventory />
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        marginBottom: 4,
+        backgroundColor: '#FED8B1', // Shade of orange
+      }}
+    >
+      <InputBase
+        placeholder="  Search…"
+        sx={{ ml: 1, width: 200,backgroundColor: '#FFB645', border: '1px solid #ccc', borderRadius: 3 }}
+        onChange={handleSearchChange}
+      />
+      <IconButton sx={{ p: '10px', marginRight: 2 }} aria-label="search">
+        <SearchIcon />
+      </IconButton>
+      <Button 
+variant="outlined" 
+sx={{ 
+  marginRight: 2, 
+  color: '#FFFFFF', // Text color (white)
+  backgroundColor: '#4CAF50', // Background color (green)
+  '&:hover': { backgroundColor: '#388E3C' } // Hover background color (dark green)
+}} 
+component={Link} 
+to="/inventory/add-item"
 >
-  Add Item
+Add Item
 </Button>
 <Button 
-  variant="outlined" 
-  sx={{ 
-    color: '#FFFFFF', // Text color (white)
-    backgroundColor: '#0689FF', // Background color (blue)
-    '&:hover': { backgroundColor: '#0689FF' } // Hover background color (dark blue)
-  }} 
-  onClick={generatePDF}
+variant="outlined" 
+sx={{ 
+  color: '#FFFFFF', // Text color (white)
+  backgroundColor: '#0689FF', // Background color (blue)
+  '&:hover': { backgroundColor: '#0689FF' } // Hover background color (dark blue)
+}} 
+onClick={generatePDF}
 >
-  Generate PDF
+Generate PDF
 </Button>
-
       </Box>
       <Paper sx={{ width: '100%', marginTop: 2, backgroundColor: 'rgba(255, 210, 200, 0.2)' }}> {/* Another shade of orange */} 
-
         {
           !isLoading ? <>
             <TableContainer sx={{ maxHeight: '100%' }}>
               <Table stickyHeader aria-label="sticky table">
                 <TableHead>
-                  <TableRow>
+                <TableRow>
                     <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '16px' }}>Name</TableCell>
                     <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '16px' }}>Category</TableCell>
                     <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '16px' }}>Quantity</TableCell>
@@ -236,19 +234,26 @@ const Home = () => {
                       key={row.itemName}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
-                      <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '14px' }}>{row.itemName}</TableCell>
-                      <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '14px' }}>{row.category}</TableCell>
-                      <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '14px' }}>{row.quantity}</TableCell>
+                      <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '14px' }} component="th" scope="row">
+                        {row.itemName}
+                      </TableCell>
+                      <TableCell align="center"sx={{ fontWeight: 'bold', fontSize: '14px' }}>{row.category}</TableCell>
+                      <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+                        {row.quantity > 20 ?
+                          <Chip color="success" icon={<Check />} label={row.quantity} /> :
+                          <Chip color="warning" icon={<Clear />} label={row.quantity} />
+                        }
+                      </TableCell>
                       <TableCell align="center" sx={{ fontWeight: 'bold', fontSize: '14px' }}>{row.price}</TableCell>
                       <TableCell align="center">
                         <img
                           src={row.img}
                           alt={row.productName}
-                          style={{ width: '40px', height: '40px', margin: 'auto' }}
+                          style={{ width: '35px', height: '35px', margin: 'auto' }}
                         />
                       </TableCell>
                       <TableCell align="center">
-                        <Button 
+                      <Button 
                           variant="outlined" 
                           sx={{ 
                             marginRight: 2, 

@@ -117,14 +117,14 @@ export default function ManageAddress() {
 
   return (
     <div>
-      <h2 className="text-2xl text-center my-4">Manage Address</h2>
-      <Button variant="contained" color="primary" style={{ marginBottom: '20px' }} onClick={handleSignupDialogOpen}>Add Address</Button>
+      <h2 className="text-3xl text-center my-4">Manage Address</h2>
+      <Button variant="contained" color="primary" style={{ marginBottom: '20px', backgroundColor: '#526CA3' }} onClick={handleSignupDialogOpen}>Add Address</Button>
 
       {
         !isLoading ? <>
-          <TableContainer component={Paper} style={{ maxWidth: '800px', margin: 'auto' }}>
+          <TableContainer component={Paper} style={{ maxWidth: '800px', margin: 'auto', backgroundColor: '#A8E0FF' }}>
             <Table>
-              <TableHead>
+              <TableHead style={{ backgroundColor: '#9EA8D1'}}>
                 <TableRow>
                   <TableCell>No</TableCell>
                   <TableCell>Address</TableCell>
@@ -141,8 +141,8 @@ export default function ManageAddress() {
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell>
-                      <Button size='small' variant="outlined" color="primary" className="mr-2" onClick={() => handleUpdateUser(user)}>Update</Button>
-                      <Button size='small' variant="outlined" color="error" startIcon={<Delete />} onClick={() => handleDeleteUser(user._id)}>Delete</Button>
+                    <Button variant="contained" color="primary" style={{ backgroundColor: '#73D380', color: '#000', marginRight: 10 }} onClick={() => handleUpdateUser(user)}>Update</Button>
+                      <Button variant="contained" color="error" startIcon={<Delete />} onClick={() => handleDeleteUser(user._id)}>Delete</Button>
                     </TableCell>
                   </TableRow>
                 ))}
