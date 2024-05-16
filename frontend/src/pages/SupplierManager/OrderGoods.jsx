@@ -67,17 +67,17 @@ const OrderGoods = () => {
     }, []);
 
     return (
-        <>
-            <div className="flex justify-center">
+        <div style={{backgroundImage: 'url("https://i.pinimg.com/564x/c4/3d/9f/c43d9f4a6bba3dd60da2118a253eadd0.jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', minHeight: '100vh'}}> 
+            <div className="flex justify-center" >
                 <Typography style={{ margin: '20px 0', fontSize: '32px', fontWeight: 'bold', fontFamily: 'Times New Roman' }}>
                     Order Stock
                 </Typography>
             </div>
 
             <Container maxWidth={'800px'}>
-                <Button onClick={handleClickOpen}>Place Order</Button>
-                <Paper sx={{ width: '100%', marginTop: 2 }}>
-                    <TableContainer sx={{ maxHeight: '100%' }}>
+                <Button variant="contained" onClick={handleClickOpen}>Place Order</Button>
+                <Paper sx={{ width: '100%', marginTop: 2 }} >
+                    <TableContainer sx={{ maxHeight: '100%' ,backgroundColor: '#f2f2f2'}} >
                         <Table stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
@@ -149,7 +149,7 @@ const OrderGoods = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </div>
     );
 };
 

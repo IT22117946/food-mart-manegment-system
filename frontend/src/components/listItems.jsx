@@ -111,12 +111,20 @@ export const supplierListItems = (
       <ListItemText primary="Home" />
     </ListItemButton>
   </Link>
+  <Link to={'/supplier/detail'}>
+    <ListItemButton>
+      <ListItemIcon>
+        <ShoppingBag />
+      </ListItemIcon>
+      <ListItemText primary="Order details" />
+    </ListItemButton>
+  </Link>
   <Link to={'/supplier/OrderGoods'}>
     <ListItemButton>
       <ListItemIcon>
         <Mail />
       </ListItemIcon>
-      <ListItemText primary="Order Goods" />
+      <ListItemText primary="Place order" />
     </ListItemButton>
   </Link>
   </React.Fragment>

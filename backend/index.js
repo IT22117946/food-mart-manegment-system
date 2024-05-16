@@ -13,6 +13,7 @@ import newsRouter from './routes/NewsRoutes.js';
 import addressRouter from './routes/AddressRoutes.js';
 import supplierRouter from './routes/SupplierRoutes.js';
 import salaryRouter from './routes/SalaryRoutes.js';
+import SuporderRouter from './routes/SuporderRoutes.js';
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -45,6 +46,10 @@ app.use('/address', addressRouter);
 app.use('/supplier', supplierRouter);
 //salary Routes
 app.use('/salary', salaryRouter);
+
+app.use('/suporder', SuporderRouter);
+
+app.use("/uploads",express.static("uploads"))
 
 dbConfig().then(()=>{
     app.listen(port,()=>{

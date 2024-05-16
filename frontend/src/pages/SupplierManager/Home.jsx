@@ -199,7 +199,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="container mx-auto">
+      <div className="container mx-auto" style={{backgroundImage: 'url("https://i.pinimg.com/564x/54/ca/0d/54ca0d3bd10058521c6f24f4c0521c09.jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', minHeight: '100vh'}}>
         <h1 className="text-2xl font-bold mb-4">Suppliers List</h1>
         <div className="flex flex-wrap items-center justify-between mb-4">
           <div className="flex mb-4 mr-4">
@@ -212,7 +212,7 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex mt-4">
+          <div className="flex mt-4" >
           <Stack spacing={2} direction="row">
             <Button variant="contained" onClick={() => setAddSupplierDialogOpen(true)} className="mr-2">Add Supplier</Button>
             <Button variant="contained" onClick={generatePDF}>Generate PDF</Button>

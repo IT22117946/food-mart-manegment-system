@@ -48,6 +48,9 @@ import Salary from './pages/StaffManager/Salary';
 import Ratings from './pages/Driver/Ratings';
 import OrderGoods from './pages/SupplierManager/OrderGoods';
 import FeedbackHome from './pages/FeedbackManager/Home';
+import InventoryItems from './pages/SupplierManager/InventoryItems';
+
+
 
 
 export default function App() {
@@ -120,6 +123,7 @@ export default function App() {
             <Route path='' element={<SupplierHome />} />
             <Route path='home' element={<SupplierHome />} />
             <Route path='OrderGoods' element={<OrderGoods />} />
+            <Route path='detail' element={<InventoryItems />} />
             <Route path='profile' element={<UserProfile />} />
           </Route>
 
