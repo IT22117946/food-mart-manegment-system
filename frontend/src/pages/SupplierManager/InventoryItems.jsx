@@ -98,7 +98,8 @@ const InventoryItems = () => {
 
   return (
     <div style={{backgroundImage: 'url("https://i.pinimg.com/564x/1a/05/07/1a05071b4b031859c93fa9657f05c53d.jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', minHeight: '100vh'}}>
-      <h1 className="text-2xl font-bold mb-4" >Supplier Order details</h1>
+      <br></br>
+      <h1 style={{ textAlign: 'center', fontFamily: 'Times New Roman', fontSize: '32px' }} className="text-2xl font-bold mb-4" >Supplier Order details</h1>
 
       <div className="flex mb-4 mr-4">
             <input
@@ -106,11 +107,11 @@ const InventoryItems = () => {
               placeholder="search by company name"
               value={searchTerm}
               onChange={handleSearch}
-              className="px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              className="ml-4 px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
             />
       </div>
 
-      <div className="flex mt-4">
+      <div className="flex mt-4 ml-4">
           <Stack spacing={2} direction="row">
             <Button variant="contained" onClick={() => setAddSOrderDialogOpen(true)} className="mr-2">Add Details</Button>
             
@@ -118,8 +119,8 @@ const InventoryItems = () => {
       </div>
 
       <br></br>
-      <table>
-          <thead className="bg-blue-100">
+      <table className="ml-4 border-separate border-spacing-2 border-1 border-gray-400">
+          <thead className="bg-cyan-700">
             <tr>
               <th className="px-4 py-2">Order number</th>
               <th className="px-4 py-2">Company name</th>
@@ -132,11 +133,11 @@ const InventoryItems = () => {
           <tbody>
             {SOrders.map(orderdetails => (
               <tr key={orderdetails._id}>
-                <td className="border px-4 py-2">{orderdetails.ordernumber}</td>
-                <td className="border px-4 py-2">{orderdetails.companyname}</td>
-                <td className="border px-4 py-2">{orderdetails.deliverydate.split("T")[0]}</td>
-                <td className="border px-4 py-2">{orderdetails.amount}</td>
-                <td className="border px-4 py-2">{orderdetails.receipt}</td>
+                <td className="border px-4 py-2 border-gray-400">{orderdetails.ordernumber}</td>
+                <td className="border px-4 py-2 border-gray-400">{orderdetails.companyname}</td>
+                <td className="border px-4 py-2 border-gray-400">{orderdetails.deliverydate.split("T")[0]}</td>
+                <td className="border px-4 py-2 border-gray-400">{orderdetails.amount}</td>
+                <td className="border px-4 py-2 border-gray-400">{orderdetails.receipt}</td>
               
               </tr>
             ))}

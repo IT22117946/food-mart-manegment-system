@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { apiUrl } from "../../utils/Constants";
 import authAxios from "../../utils/authAxios";
 import { toast } from "react-toastify";
-import { Box, Container, Typography, Paper, TextField, Rating, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {Container, Typography, Paper, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -77,7 +77,7 @@ const OrderGoods = () => {
             <Container maxWidth={'800px'}>
                 <Button variant="contained" onClick={handleClickOpen}>Place Order</Button>
                 <Paper sx={{ width: '100%', marginTop: 2 }} >
-                    <TableContainer sx={{ maxHeight: '100%' ,backgroundColor: '#f2f2f2'}} >
+                    <TableContainer sx={{ maxHeight: '100%' ,backgroundColor: '#F5F5F5'}} >
                         <Table stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>

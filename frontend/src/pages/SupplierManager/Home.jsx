@@ -200,19 +200,20 @@ export default function Home() {
   return (
     <>
       <div className="container mx-auto" style={{backgroundImage: 'url("https://i.pinimg.com/564x/54/ca/0d/54ca0d3bd10058521c6f24f4c0521c09.jpg")', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', minHeight: '100vh'}}>
-        <h1 className="text-2xl font-bold mb-4">Suppliers List</h1>
+        <br></br>
+        <h1 style={{ textAlign: 'center', fontFamily: 'Times New Roman', fontSize: '36px' }} className="text-2xl font-bold mb-4">Suppliers List</h1>
         <div className="flex flex-wrap items-center justify-between mb-4">
-          <div className="flex mb-4 mr-4">
+          <div className="flex mb-4 ">
             <input
               type="text"
               placeholder="search by company name"
               value={searchTerm}
               onChange={handleSearch}
-              className="px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              className="ml-4 px-3 py-2 border rounded-md focus:outline-none focus:ring"
             />
           </div>
 
-          <div className="flex mt-4" >
+          <div className="flex mt-4">
           <Stack spacing={2} direction="row">
             <Button variant="contained" onClick={() => setAddSupplierDialogOpen(true)} className="mr-2">Add Supplier</Button>
             <Button variant="contained" onClick={generatePDF}>Generate PDF</Button>
@@ -222,8 +223,8 @@ export default function Home() {
         </div>
 
         <br></br>
-        <table id="supplierTable" className="table-auto w-full rounded-t-lg">
-          <thead className="bg-blue-100">
+        <table id="supplierTable" className="border-separate border-spacing-2 border-2 border-gray-400">
+          <thead className="bg-cyan-700">
             <tr>
               <th className="px-4 py-2">Company Name</th>
               <th className="px-4 py-2">Supplier Name</th>
@@ -237,13 +238,13 @@ export default function Home() {
           <tbody>
             {filteredSuppliers.map(supplier => (
               <tr key={supplier._id}>
-                <td className="border px-4 py-2">{supplier.companyName}</td>
-                <td className="border px-4 py-2">{supplier.name}</td>
-                <td className="border px-4 py-2">{supplier.mobile}</td>
-                <td className="border px-4 py-2">{supplier.email}</td>
-                <td className="border px-4 py-2">{supplier.address}</td>
-                <td className="border px-4 py-2">{supplier.pDescription}</td>
-                <td className="border px-4 py-2">
+                <td className="border px-4 py-2 border-gray-400">{supplier.companyName}</td>
+                <td className="border px-4 py-2 border-gray-400">{supplier.name}</td>
+                <td className="border px-4 py-2 border-gray-400">{supplier.mobile}</td>
+                <td className="border px-4 py-2 border-gray-400">{supplier.email}</td>
+                <td className="border px-4 py-2 border-gray-400">{supplier.address}</td>
+                <td className="border px-4 py-2 border-gray-400">{supplier.pDescription}</td>
+                <td className="border px-4 py-2 border-gray-400">
 
                 <Stack spacing={2} direction="row">  
                 <IconButton aria-label="delete" size="large">
