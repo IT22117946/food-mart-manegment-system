@@ -1,25 +1,27 @@
-import { Cancel, Delete } from '@material-ui/icons'
+import { Delete } from "@material-ui/icons";
 import { useState, useEffect } from "react";
 import { apiUrl } from "../../utils/Constants";
 import authAxios from "../../utils/authAxios";
 import { toast } from "react-toastify";
-import jsPDF from 'jspdf';
-import { Button, Dialog, DialogTitle } from '@material-ui/core';
-import { DialogActions, DialogContent, Rating} from '@mui/material';
+import jsPDF from "jspdf";
+import { Button, Dialog, DialogTitle } from "@material-ui/core";
+import { DialogActions, DialogContent, Rating } from "@mui/material";
+import "jspdf-autotable"; // Ensure to import this for autoTable to work
 
 export default function Orders() {
-
   const [orders, setOrders] = useState([]);
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    driverId:'',
-    rate: '',
+    driverId: "",
+    rate: "",
   });
+  const [selectedMonth, setSelectedMonth] = useState("");
 
   const handleClickOpen = (driverId) => {
     setOpen(true);
     setFormData({
       driverId: driverId,
+      rate: "",
     });
   };
 
@@ -35,28 +37,29 @@ export default function Orders() {
     try {
       const result = await authAxios.post(`${apiUrl}/review/driver`, formData);
       if (result) {
-        toast.success("review successfully");
+        toast.success("Review submitted successfully");
       }
       getOrders();
       setOpen(false);
     } catch (error) {
-      //console.log(error);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "An error occurred");
     }
   };
 
   const getOrders = async () => {
     try {
       const res = await authAxios.get(`${apiUrl}/order`);
-      setOrders(res.data);
-      console.log(orders) // Directly set favorites to the array of favorites
+      let filteredOrders = res.data;
+      if (selectedMonth !== "") {
+        filteredOrders = res.data.filter(
+          (order) =>
+            new Date(order.createdAt).getMonth() === parseInt(selectedMonth) - 1
+        );
+      }
+      setOrders(filteredOrders);
     } catch (error) {
       console.error(error);
-      if (error.response && error.response.status === 404) {
-        toast.error('Orders is Empty');
-      } else {
-        toast.error(error.response?.data?.message || 'An error occurred');
-      }
+      toast.error(error.response?.data?.message || "An error occurred");
     }
   };
 
@@ -64,34 +67,35 @@ export default function Orders() {
     try {
       const result = await authAxios.delete(`${apiUrl}/order/${itemId}`);
       if (result) {
-        toast.success("Removed");
+        toast.success("Order removed successfully");
         getOrders();
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "An error occurred");
     }
   };
 
   useEffect(() => {
     getOrders();
-  }, []);
+  }, [selectedMonth]);
 
   const handleGeneratePDF = () => {
     const doc = new jsPDF();
-    // Header
-    const header = [['Id', 'Date', 'Price', 'Driver', 'Status']];
-    // Data
-    const data = orders.map((orders, index) => [
-      orders._id,
-      new Date(orders.createdAt).toLocaleDateString(),
-      orders.driverId ? `${orders.driverId.firstName} ${orders.driverId.lastName}` : 'N/A',
-      orders.price,
-      orders.status,
+    const header = [["No", "Id", "Date", "Driver", "Status"]];
+    const data = orders.map((order, index) => [
+      index + 1,
+      order._id,
+      new Date(order.createdAt).toLocaleDateString(),
+      order.driverId
+        ? `${order.driverId.firstName} ${order.driverId.lastName}`
+        : "N/A",
+      order.status,
     ]);
-    // Set font size and align center in width
+
     doc.setFontSize(12);
-    doc.text("Order Details", doc.internal.pageSize.width / 2, 10, { align: 'center' });
-    // Add header and data to the table
+    doc.text("Order Details", doc.internal.pageSize.width / 2, 10, {
+      align: "center",
+    });
     doc.autoTable({
       head: header,
       body: data,
@@ -100,113 +104,142 @@ export default function Orders() {
     });
 
     doc.save("cus_orders.pdf");
-  }
+  };
+
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
+  };
 
   return (
-    <div class="bg-white p-8 rounded-md w-full">
-      <div class=" flex items-center justify-between pb-6">
+    <div className="bg-white p-8 rounded-md w-full">
+      <div className="flex items-center justify-between pb-6">
         <div>
-          <h2 class="text-gray-600 font-semibold">Products Oder</h2>
-          <span class="text-xs">All products item</span>
+          <h2 className="text-gray-600 font-semibold">Products Order</h2>
+          <span className="text-xs">All product items</span>
         </div>
-        <div class="flex items-center justify-between">
-          <div class="flex bg-gray-50 items-center p-2 rounded-md">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clip-rule="evenodd" />
-            </svg>
-            <input class="bg-gray-50 outline-none ml-1 block " type="text" name="" id="" placeholder="search..." />
-          </div>
-          <Button variant="contained" color="primary" className="ml-2" onClick={handleGeneratePDF}>Generate PDF</Button>
+        <div className="flex items-center justify-between">
+          <select
+            className="bg-gray-50 outline-none ml-1 block"
+            onChange={handleMonthChange}
+            value={selectedMonth}
+          >
+            <option value="">All Months</option>
+            {Array.from({ length: 12 }, (_, i) => (
+              <option key={i} value={i + 1}>
+                {new Date(0, i).toLocaleString("default", { month: "long" })}
+              </option>
+            ))}
+          </select>
+          <Button
+            variant="contained"
+            color="primary"
+            className="ml-2"
+            onClick={handleGeneratePDF}
+          >
+            My Order Details
+          </Button>
         </div>
       </div>
       <div>
-        <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-          <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
-            <table class="min-w-full leading-normal">
+        <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+          <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+            <table className="min-w-full leading-normal">
               <thead>
                 <tr>
-                  <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Id
-                  </th>
-                  <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Price
-                  </th>
-                  <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Driver
-                  </th>
-                  <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th
-                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  {["No", "Id", "Date", "Driver", "Status", "Actions"].map(
+                    (header) => (
+                      <th
+                        key={header}
+                        className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                      >
+                        {header}
+                      </th>
+                    )
+                  )}
                 </tr>
               </thead>
-              {orders.map((orders, index) => {
-                return (
-                  <tbody>
-                    <tr>
-                      <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <div class="flex items-center">
-                          <div class="ml-3">
-                            <p class="text-gray-900 whitespace-no-wrap">
-                              {orders._id}
+              {orders.length > 0 ? (
+                <tbody>
+                  {orders.map((order, index) => (
+                    <tr key={order._id}>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <div className="flex items-center">
+                          <div className="ml-3">
+                            <p className="text-gray-900 whitespace-no-wrap">
+                              {index + 1}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <p class="text-gray-900 whitespace-no-wrap">
-                          {new Date(orders.createdAt).toLocaleDateString()}
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <div className="flex items-center">
+                          <div className="ml-3">
+                            <p className="text-gray-900 whitespace-no-wrap">
+                              {order._id}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          {new Date(order.createdAt).toLocaleDateString()}
                         </p>
                       </td>
-                      <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <p class="text-gray-900 whitespace-no-wrap">
-                          {orders.price}
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <p className="text-gray-900 whitespace-no-wrap">
+                          {order.driverId
+                            ? `${order.driverId.firstName} ${order.driverId.lastName}`
+                            : "N/A"}
                         </p>
                       </td>
-                      <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <p class="text-gray-900 whitespace-no-wrap">
-                          {orders.driverId ? `${orders.driverId.firstName} ${orders.driverId.lastName}` : 'N/A'}
-                        </p>
-                      </td>
-                      <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                        <span
-                          class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                          <span aria-hidden
-                            class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-                          <span class="relative">{orders.status}</span>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                          <span
+                            aria-hidden
+                            className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
+                          ></span>
+                          <span className="relative">{order.status}</span>
                         </span>
                       </td>
-                      {orders.status !== "completed" ? (
-                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          <span class="relative inline-block px-3 py-1 font-semibold text-red-600 leading-tight">
-                            <span aria-hidden class="absolute inset-0 bg-red-200 opacity-50 rounded-full"></span>
-                            <span class="relative" onClick={() => { removeOrder(orders._id) }}> <Delete fontSize='small' /></span>
+                      <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                        {order.status !== "completed" ? (
+                          <span
+                            className="relative inline-block px-3 py-1 font-semibold text-red-600 leading-tight cursor-pointer"
+                            onClick={() => removeOrder(order._id)}
+                          >
+                            <span
+                              aria-hidden
+                              className="absolute inset-0 bg-red-200 opacity-50 rounded-full"
+                            ></span>
+                            <span className="relative">
+                              <Delete fontSize="small" />
+                            </span>
                           </span>
-                        </td>
-                      ) : (
-                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          {orders.driverId ? <Button onClick={()=>{handleClickOpen(orders.driverId._id)}}>Rate Driver</Button> : 'N/A'}
-                        </td>
-                      )}
-
+                        ) : order.driverId ? (
+                          <Button
+                            onClick={() => handleClickOpen(order.driverId._id)}
+                          >
+                            Rate Driver
+                          </Button>
+                        ) : (
+                          "N/A"
+                        )}
+                      </td>
                     </tr>
-                  </tbody>
-                )
-              })}
+                  ))}
+                </tbody>
+              ) : (
+                <tbody>
+                  <tr>
+                    <td
+                      colSpan="6"
+                      className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center"
+                    >
+                      No orders found.
+                    </td>
+                  </tr>
+                </tbody>
+              )}
             </table>
           </div>
         </div>
@@ -218,30 +251,31 @@ export default function Orders() {
         aria-describedby="alert-dialog-description"
         PaperProps={{
           style: {
-            width: '33%',
-            minWidth: '200px',
-            maxWidth: '500px',
+            width: "33%",
+            minWidth: "200px",
+            maxWidth: "500px",
           },
         }}
       >
-        <DialogTitle id="alert-dialog-title">
-          Rate Driver
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">Rate Driver</DialogTitle>
         <DialogContent>
-
           <Rating
             name="simple-controlled"
-            value={formData.rate} onChange={(e) => handleCreateReview('rate', e.target.value)}
+            value={formData.rate}
+            onChange={(e) => handleCreateReview("rate", e.target.value)}
           />
         </DialogContent>
-
         <DialogActions>
-          <Button onClick={() => { handleSubmit() }}>Publish</Button>
+          <Button
+            onClick={handleSubmit}
+          >
+            Publish
+          </Button>
           <Button onClick={handleClose} autoFocus>
             Cancel
           </Button>
         </DialogActions>
       </Dialog>
     </div>
-  )
+  );
 }
